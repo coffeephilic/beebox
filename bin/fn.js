@@ -8,9 +8,9 @@
 	function loadStyle(path){
 		//TODO
 	}
-	loadScript("/../../lib/js/audioAnalysis.lib.js");
-	loadScript("/../../lib/js/quantize.fn.js");
-	loadScript("/../../lib/js/color.lib.js");
-	loadScript("/../../lib/js/numericalArray.lib.js");
-	//loadScript("/../../lib/js/sequentialArray.lib.js");
+	loadScript("../lib/js/audioAnalysis.lib.js");
+	loadScript("../lib/js/quantize.fn.js");
+	loadScript("../lib/js/color.lib.js");
+	loadScript("../lib/js/numericalArray.lib.js");
+	//loadScript("../lib/js/sequentialArray.lib.js");
 }());
