@@ -1,0 +1,95 @@
+{
+	"title":"SONA_25"
+	,"description":"Copyright DJ Sona.  Not for publication or distribution in any form."
+	,"resolution":16
+	,"theme":{
+		"main":"#272454"
+		,"accent":"#DE8416"
+		,"line":"#2237AB"
+		,"matte":"#e7e7e7c0"
+		,"input":"#00000000"
+		,"inputText":"#243387"
+		,"flagStart":"#3E57E6"
+		,"flagEnd":"#8D96C4"
+		,"backgroundImage":""
+		,"mainFont":"Arial"
+		,"inputFont":"Helvetica"
+		,"borderRadius":2
+		,"matteBlur":2
+	}
+	,"marker":[
+		{
+			"bar":0
+			,"time":0.000
+			,"flag":"intro"
+		},{
+			"bar":4
+			,"time":11.294
+			,"flag":"verse 1"
+		},{
+			"bar":12
+			,"time":33.883
+			,"flag":"chorus"
+		},{
+			"bar":20
+			,"time":56.470
+			,"flag":"verse 2"
+		},{
+			"bar":28
+			,"time":79.059
+			,"flag":"chorus"
+		},{
+			"bar":36
+			,"time":101.647
+			,"flag":"verse 3"
+		},{
+			"bar":44
+			,"time":124.236
+			,"flag":"chorus"
+		},{
+			"bar":52
+			,"time":146.824
+			,"flag":"verse 4"
+		},{
+			"bar":60
+			,"time":169.412
+			,"flag":"chorus"
+		},{
+			"bar":68
+			,"time":192.000
+			,"flag":"verse 5"
+		},{
+			"bar":76
+			,"time":214.589
+			,"flag":"chorus"
+		},{
+			"bar":84
+			,"time":237.177
+			,"flag":"verse 6"
+		},{
+			"bar":92
+			,"time":259.766
+			,"flag":"chorus"
+		},{
+			"bar":100
+			,"time":282.354
+			,"flag":"verse 7"
+		},{
+			"bar":108
+			,"time":304.942
+			,"flag":"chorus"
+		},{
+			"bar":116
+			,"time":327.530
+			,"flag":"verse 8"
+		},{
+			"bar":124
+			,"time":350.118
+			,"flag":"coda"
+		},{
+			"bar":128
+			,"time":361.412
+			,"flag":"end"
+		}
+	]
+}
