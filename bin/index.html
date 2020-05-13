@@ -6,6 +6,8 @@
 			--accent: #0000ff;
 			--line: #202020;
 			--matte: #ffffff80;
+			--inactive: #808080;
+			--record: #cc0000;
 			--input: #ffffff80;
 			--inputText: #202020;
 			--mainFont: sans;
@@ -23,7 +25,7 @@
 			color: var(--line);
 			
 			display: grid;
-			grid-template-columns: auto 584px auto;
+			grid-template-columns: minmax(400px, min-content) 584px auto;
 			grid-gap: 4px;
 		}
 		
@@ -33,7 +35,12 @@
 			background-color: var(--matte);
 		}
 		
-		#trackSelectContainer, #analysisContainer, #track, #control, #hint span:not(:empty) {
+		#trackSelectContainer, 
+		#analysisContainer, 
+		#track, 
+		#control, 
+		#phraseControl:not(:empty),
+		#hint span:not(:empty) {
 			background-color: var(--matte);
 			border-radius: var(--borderRadius);
 			backdrop-filter: blur(var(--matteBlur));
@@ -106,7 +113,7 @@
 			position: relative;
 			width: 288px;
 			height: 12px;
-			margin: 24px 0;
+			margin: 24px 0 36px 0;
 			border-radius: var(--borderRadius);
 		}
 		.marker {
@@ -150,25 +157,63 @@
 			background-color: var(--input);
 			font-family: var(--inputFont);
 			color: var(--inputText);
-			line-height: 36px;
+			line-height: 48px;
 			font-size: 12px;
 			resize: none;
 			border-radius: var(--borderRadius);
 		}
+		#punchIn, #punchOut {
+			position: absolute;
+			width: 0;
+			height: 0;
+			border-bottom: solid 12px transparent;
+		}
+		#punchIn {
+			border-left: solid 12px var(--record);
+			border-right: solid 0 transparent;
+		}
+		#punchOut {
+			border-right: solid 12px var(--record);
+			border-left: solid 0 transparent;
+		}
+		#addPhraseButton {
+			position: absolute;
+			top: 24px;
+			right: 6px;
+			width: 12px;
+			height: 12px;
+			text-align: center;
+			line-height: 12px;
+			font-size: 16px;
+			border-radius: 50%;
+			background-color: var(--matte);
+			box-shadow: 1px 0 var(--matteBlur) inset var(--line);
+			color: var(--inputText);
+			cursor: pointer;
+			user-select: none;
+		}
 		
-		#control {
-			display:inline-block;
+		#control, #phraseControl {
 			padding: 8px;
+			margin-bottom: 8px;
 		}
 		#control div {
 			display: inline-block;
 			margin-right: 8px;
 		}
-		#playButton {
+		#phraseControl > div {
+			display: grid;
+			grid-template-columns: repeat(2, 24px) auto 24px;
+			grid-gap: 8px;
+		}
+		#playButton,
+		#phrasePlayButton {
 			cursor: pointer;
 			transition: .4s;
+			grid-area: 1 / 1;
 		}
-		#playButton.play {
+		#playButton.play,
+		#phrasePlayButton.play {
 			width: 0;
 			height: 0;
 			border-left: 24px solid var(--line);
@@ -176,7 +221,8 @@
 			border-bottom: 12px solid transparent;
 			border-right: 0px solid transparent;
 		}
-		#playButton.pause {
+		#playButton.pause,
+		#phrasePlayButton.pause {
 			width: 8px;
 			height: 24px;
 			border-left: 8px solid var(--line);
@@ -184,11 +230,75 @@
 			border-top: 0 solid transparent;
 			border-bottom: 0 solid transparent;
 		}
-		#recordButton {
+		#recordButton,
+		#phraseControl .record {
 			width: 24px;
 			height: 24px;
 			border-radius: 12px;
-			background-color: red;
+			cursor: pointer;
+			grid-area: 1 / 2;
+		}
+		
+		#phraseControl .loop,
+		#phraseControl .mute,
+		#phraseControl .draft,
+		#phraseControl .scratch {
+			cursor: pointer;
+			user-select: none;
+		}
+		#phraseControl .loop,
+		#phraseControl .mute {
+			width: 24px;
+			height: 24px;
+			line-height: 24px;
+			text-align: center;
+		}
+		#phraseControl .loop {
+			grid-area: 1 / 4;
+		}
+		#phraseControl .mute {
+			grid-column: 1;
+		}
+		#phraseControl .draft {
+			grid-area: 2 / 2 / span 1 / span 3;
+		}
+		#phraseControl .scratch {
+			grid-area: 3 / 2 / span 1 / span 3;
+		}
+		#phraseControl .text {
+			grid-area: 4 / 1 / span 1 / span 4;
+			resize: none;
+			border-radius: var(--borderRadius);
+		}
+		
+		#phraseControl .loop.on,
+		#phraseControl .mute.on,
+		#phraseControl .draft.on,
+		#phraseControl .scratch.on {
+			background-color: var(--accent);
+		}
+		#recordButton,
+		#phraseControl .record.on {
+			background-color: var(--record);
+		}
+		#phraseControl .loop.off,
+		#phraseControl .mute.off,
+		#phraseControl .draft.off,
+		#phraseControl .scratch.off {
+			color: var(--inactive);
+			background-color: var(--matte);
+		}
+		#phraseControl .record.off {
+			background-color: var(--inactive);
+		}
+		
+		.phraseMarker {
+			background-color: var(--accent);
+			position: absolute;
+			height: 12px;
+			top: 24px;
+			border-radius: var(--borderRadius);
+			box-shadow: 1px 0 var(--matteBlur) inset var(--line);
 			cursor: pointer;
 		}
 		
@@ -226,7 +336,8 @@
 	<div></div>
 	<div>
 		<div id="control"></div>
-		<div id="hint">
+		<div id="phraseControl"></div>
+		<!-- <div id="hint">
 			<span>Controls:</span>
 				<span></span>
 			<span>click</span>
@@ -239,7 +350,7 @@
 				<span>play markers only</span>
 			<span>\ while recording</span>
 				<span>place a marker</span>
-		</div>
+		</div> -->
 	</div>
 	<div id="track"></div>
 	<script src="fn.js"></script>
@@ -247,7 +358,11 @@
 		(function(){
 			document.body.onload=main;
 		}());
-		
+		function isPlaying(audio){
+			if(!audio){return false;}
+			if(!audio.paused && audio.currentTime!==null && !isNaN(audio.currentTime)){return true;}
+			return false;
+		}
 		
 		function Marker(bar, time, flag){
 			this.bar=bar;
@@ -266,6 +381,7 @@
 			}
 			
 			this.element.classList="marker";
+			this.element.marker=this;
 		}
 		
 		function Bubble(start,end){
@@ -278,7 +394,226 @@
 			//TODO do something with the contour values
 			
 			this.element.classList="bubble";
-		}	
+		}
+		
+		function Phrase(start,end){
+			var self=this;
+			this.start=start;
+			this.end=end;
+			this.text="";
+			this.draft=new Audio();
+			this.scratch=new Audio();
+			this.marker=[];
+			this.phraseMarker=[];
+			this.loop=false;
+			this.muteDraft=false;
+			this.muteScratch=false;
+			this.activeAudio=null;
+			this.meter;
+			this.container=document.createElement("div");
+			
+			this.play=function(){
+				if(this.draft.src && !this.muteDraft){
+					this.draft.currentTime=0;
+					this.draft.play();
+				}
+				if(this.scratch.src && !this.muteScratch){
+					this.scratch.currentTime=0;
+					this.scratch.play();
+				}
+				inst.audio.currentTime=this.start.time; inst.audio.volume=0.1;
+				inst.audio.play();
+				document.getElementById("phrasePlayButton").classList="pause";
+				document.getElementById("playButton").classList="pause";
+			}
+			this.pause=function(){
+				mic.armed=false;
+				if(this.draft){this.draft.pause();}
+				if(this.scratch){this.scratch.pause();}
+				inst.audio.pause();
+				document.getElementById("phrasePlayButton").classList="play";
+				document.getElementById("playButton").classList="play";
+			}
+			this.playPause=function(){
+				if(isPlaying(inst.audio) || isPlaying(self.draft) || isPlaying(self.scratch)){
+					self.pause();
+				}else{
+					self.play();
+					var stopMarkerListener=function(){
+						if(inst.audio.currentTime>=self.end.time){
+							if(self.loop){
+								self.play();
+							}else{
+								self.pause();
+							}
+						}
+						if(isPlaying(inst.audio)){
+							window.requestAnimationFrame(stopMarkerListener);
+						}
+					}
+					stopMarkerListener();
+				}
+			}
+			
+			this.displayControls=function(){
+				inst.activePhrase=this;
+				let parent=document.getElementById("phraseControl");
+				parent.innerHTML="";
+				parent.appendChild(this.container);
+				
+				inst.setPunchPoint("in", this.start);
+				inst.setPunchPoint("out",this.end);
+			}
+			
+			this.displayMarker=function(){
+				for(var i=0; i<this.phraseMarker.length; i++){
+					this.phraseMarker[i].parentElement.removeChild(this.phraseMarker[i]);
+				}
+				this.phraseMarker=[];
+				var thisBar=false;
+				for(var i=0; i<inst.bar.length; i++){
+					var element;
+					if(thisBar){
+						element=document.createElement("div");
+						element.style.left=0;
+						element.style.width=inst.bar[i].marker[inst.bar[i].marker.length-1].element.getBoundingClientRect().right-inst.bar[i].marker[0].element.getBoundingClientRect().left;
+					}
+					
+					if(inst.bar[i].marker.indexOf(this.start)>-1){
+						thisBar=true;
+						element=document.createElement("div");
+						element.style.left=this.start.element.style.left;
+						element.style.width=inst.bar[i].marker[inst.bar[i].marker.length-1].element.getBoundingClientRect().right-this.start.element.getBoundingClientRect().left;
+					}
+					if(element){
+						element.classList="phraseMarker";
+						element.addEventListener("click", function(){self.displayControls();});
+					}
+					if(inst.bar[i].marker.indexOf(this.end)>-1){
+						console.log("ends at "+i);
+						element.style.width=(inst.bar[i].marker.indexOf(this.start)>-1)?this.end.element.getBoundingClientRect().right-this.start.element.getBoundingClientRect().left:this.end.element.getBoundingClientRect().right-inst.bar[i].marker[0].element.getBoundingClientRect().left;
+						if(element){
+							inst.bar[i].element.appendChild(element);
+							this.phraseMarker.push(element);
+						}
+						break;
+					}
+					if(element){
+						inst.bar[i].element.appendChild(element);
+						this.phraseMarker.push(element);
+					}
+				}
+			}
+			
+			this.displayMarker();
+			
+			let playButton=document.createElement("div");
+			playButton.id="phrasePlayButton";
+			playButton.classList="play";
+			playButton.addEventListener("click",self.playPause);
+			this.container.appendChild(playButton);
+			
+			let recordButton=document.createElement("div");
+			recordButton.classList="record off";
+			recordButton.addEventListener("click",function(){
+				if(self.activeAudio){
+					let bubbleList=document.getElementsByClassName("bubble");
+					for(var i=bubbleList.length-1; i>-1; i--){
+						bubbleList[i].parentElement.removeChild(bubbleList[i]);
+					}
+					mic.armed=true;
+					mic.recorderArmed=true;
+					self.play();
+				}
+			});
+			this.container.appendChild(recordButton);
+			
+			let loopButton=document.createElement("div");
+			loopButton.classList=(self.loop)?"loop on":"loop off";
+			loopButton.innerHTML="&#128257;";
+			loopButton.addEventListener("click", function(){
+				self.loop=!self.loop;
+				this.classList=(self.loop)?"loop on":"loop off";
+			});
+			this.container.appendChild(loopButton);
+			
+			let draft=document.createElement("canvas");
+			let scratch=document.createElement("canvas");
+			
+			let muteDraft=document.createElement("div");
+			muteDraft.classList=(self.muteDraft)?"mute on":"mute off";
+			muteDraft.innerHTML="M";
+			muteDraft.addEventListener("click", function(){
+				self.muteDraft=!self.muteDraft;
+				this.classList=(self.muteDraft)?"mute on":"mute off";
+			});
+			this.container.appendChild(muteDraft);
+			
+			draft.classList="draft off";
+			draft.addEventListener("click",function(){
+				if(self.activeAudio=="draft"){
+					self.activeAudio=null;
+					this.classList="draft off";
+					recordButton.classList="record off";
+				}else{
+					self.activeAudio="draft";
+					this.classList="draft on";
+					scratch.classList="scratch off";
+					recordButton.classList="record on";
+					self.meter=new LoudnessMeter(this);
+					self.meter.lRec=280;
+				}
+			});
+			draft.height=64;
+			draft.width=280;
+			let ctxD=draft.getContext("2d");
+			ctxD.font=(inst.theme.mainFont)?"12px "+inst.theme.mainFont:"12px Arial";
+			ctxD.fillText("Draft track", 8, 12);
+			this.container.appendChild(draft);
+			
+			let muteScratch=document.createElement("div");
+			muteScratch.classList=(self.muteScratch)?"mute on":"mute off";
+			muteScratch.innerHTML="M";
+			muteScratch.addEventListener("click", function(){
+				self.muteScratch=!self.muteScratch;
+				this.classList=(self.muteScratch)?"mute on":"mute off";
+			});
+			this.container.appendChild(muteScratch);
+			
+			scratch.classList="scratch off";
+			scratch.addEventListener("click",function(){
+				if(self.activeAudio=="scratch"){
+					self.activeAudio=null;
+					this.classList="scratch off";
+					recordButton.classList="record off";
+				}else{
+					self.activeAudio="scratch";
+					this.classList="scratch on";
+					draft.classList="draft off";
+					recordButton.classList="record on";
+					self.meter=new LoudnessMeter(this);
+					self.meter.lRec=280;
+				}
+			});
+			scratch.height=64;
+			scratch.width=280;
+			let ctxS=scratch.getContext("2d");
+			ctxS.font=(inst.theme.mainFont)?"12px "+inst.theme.mainFont:"12px Arial";
+			ctxS.fillText("Scratch track", 8, 12);
+			this.container.appendChild(scratch);
+			
+			//TODO: controls for the accompaniment track
+			
+			let text=document.createElement("textarea");
+			text.classList="text";
+			text.value=this.text;
+			text.addEventListener("change",function(){self.text=this.value;});
+			text.addEventListener("focus",function(){hotkey.keyLock=true;});
+			text.addEventListener("blur",function(){hotkey.keyLock=false;});
+			this.container.appendChild(text);
+			
+			//TODO: maybe add a karaoke mode where each phrase's lyrics appear fullscreen in time with this.start
+		}
 		
 		function Bar(number,start,end){
 			this.number=number;
@@ -289,8 +624,8 @@
 			this.marker=[];
 			
 			this.addMarker=function(marker, resolution){
-				marker.element=document.createElement("div");
-				marker.element.classList.add("marker");
+				//marker.element=document.createElement("div");
+				//marker.element.classList.add("marker");
 				marker.element.style.left=(marker.bar-Math.floor(marker.bar))*this.element.scrollWidth;
 				marker.element.style.width=(this.element.scrollWidth/resolution)-1;
 				
@@ -327,7 +662,13 @@
 			this.futureHit=[];
 			this.marker=[];
 			this.bar=[];
+			this.phrase=[];
 			this.startOffset=0;
+			this.punchIn=document.createElement("div");
+			this.punchOut=document.createElement("div");
+			this.activePhrase;
+			
+			this.markerDrop=function(){}
 			this.getBarByTime=function(time){
 				let pointer=Math.floor((this.bar.length-1)/2);
 				let min=0;
@@ -360,10 +701,8 @@
 			}
 			
 			this.copyBar=function(source, destination){
-				let srcMarkers=source.getElementsByClassName("marker");
-				let destMarkers=destination.getElementsByClassName("marker");
-				for(var i=0; i<destMarkers.length; i++){
-					destMarkers[i].applyActive(srcMarkers[i].marker.active);
+				for(var i=0; i<destination.marker.length; i++){
+					destination.marker[i].applyActive(source.marker[i].active);
 				}
 			}
 			this.draw=function(parent=document.getElementById("track"),control=document.getElementById("control")){
@@ -373,7 +712,7 @@
 				var bar;
 				for(var i=0; i<this.marker.length; i++){
 					let m=this.marker[i];
-					if(m.bar-Math.floor(m.bar)==0){ 
+					if(m.bar-Math.floor(m.bar)==0){
 						if(this.bar.length){this.bar[this.bar.length-1].end=m.time;}
 						bar=new Bar(m.bar,m.time,null);
 						bar.element.classList.add(m.bar);
@@ -387,13 +726,22 @@
 							bar.element.appendChild(flagElement);
 							if(flags.indexOf(flag)==-1){flags.push(flag);}
 						}
+						function getBarByNumber(number){
+							for(var j=0; j<self.bar.length; j++){
+								if(self.bar[j].number==number){return self.bar[j];}
+							}
+							return null;
+						}
+						let n=bar.number;
 						bar.element.flag=flag;
 						bar.element.setAttribute("draggable",true);
 						bar.element.addEventListener("dragover",function(event){event.preventDefault();});
 						bar.element.addEventListener("drop",function(event){
-							self.copyBar(parent.getElementsByClassName(event.dataTransfer.getData("source"))[0],bar);
+							if(!event.dataTransfer.getData("source")){return;}
+							self.copyBar(getBarByNumber(event.dataTransfer.getData("source")),getBarByNumber(n));
 						});
-						bar.element.addEventListener("dragstart",function(event){event.dataTransfer.setData("source",bar.number);});
+						
+						bar.element.addEventListener("dragstart",function(event){event.dataTransfer.setData("source",n);});
 					}
 					if(!bar){continue;}
 					bar.addMarker(m, this.resolution);
@@ -417,6 +765,7 @@
 								}
 						}
 					});
+					m.element.addEventListener("drop",function(event){self.markerDrop(event);});
 				}
 				if(!this.bar[this.bar.length-1].end){this.bar[this.bar.length-1].end=this.end;}
 				let color=gradient(flags.length-1
@@ -427,10 +776,16 @@
 						this.bar[i].element.style.backgroundColor=color[flags.indexOf(this.bar[i].element.flag)];
 					}
 				}
+				
+				parent.appendChild(this.punchIn);
+				this.setPunchPoint("in", this.marker[0]);
+				parent.appendChild(this.punchOut);
+				this.setPunchPoint("out", this.bar[0].marker[this.bar[0].marker.length-1]);
+				
 				let lyrics=document.createElement("textarea");
 				lyrics.classList="lyrics";
 				lyrics.placeholder="Spill your soul here.";//TODO replace this with something translatable
-				lyrics.style.height=this.bar[this.bar.length-1].element.offsetTop+this.bar[this.bar.length-1].element.scrollHeight;//
+				lyrics.style.height=this.bar[this.bar.length-1].element.offsetTop+this.bar[this.bar.length-1].element.scrollHeight;
 				lyrics.addEventListener("focus",function(){hotkey.keyLock=true;});
 				lyrics.addEventListener("blur",function(){hotkey.keyLock=false;});
 				parent.appendChild(lyrics);
@@ -441,6 +796,7 @@
 				playButton.addEventListener("click", function(){
 					self.audio.currentTime=self.startMarker.time;
 					self.playPause();
+					//TODO loop through each phrase and play the draft track at the appropriate time
 				});
 				control.appendChild(playButton);
 				
@@ -450,7 +806,7 @@
 					self.audio.currentTime=self.startMarker.time;
 					self.record();
 				});
-				control.appendChild(recordButton);
+				//control.appendChild(recordButton);
 				
 				//TODO add a play marker button
 				//TODO add a reset button that deactivates all markers
@@ -464,23 +820,27 @@
 				mic.armed=false;
 				hotkey.marker=false;
 				let playButton=document.getElementById("playButton");
+				let phrasePlayButton=document.getElementById("phrasePlayButton");
 				if(playButton){playButton.classList="play";}
+				if(phrasePlayButton){phrasePlayButton.classList="play";}
 			}
 			this.play=function(){
 				this.audio.play();
 				let playButton=document.getElementById("playButton");
+				let phrasePlayButton=document.getElementById("phrasePlayButton");
 				if(playButton){playButton.classList="pause";}
+				if(phrasePlayButton){phrasePlayButton.classList="pause";}
 				
 				var stopMarkerListener=function(){
 					if(self.audio.currentTime>=self.stopMarker.time){self.pause(); return;}
-					if((!self.audio.paused && self.audio.currentTime) || self.futureHit.length){
+					if(isPlaying(self.audio) || self.futureHit.length){
 						window.requestAnimationFrame(stopMarkerListener);
 					}
 				}
 				stopMarkerListener();
 			}
-			this.playPause=function(){
-				if((!self.audio.paused && self.audio.currentTime!==null && !isNaN(self.audio.currentTime)) || self.futureHit.length){
+			this.playPause=function(){ //TODO add a visual marker for the current position
+				if(isPlaying(self.audio) || self.futureHit.length){
 					self.pause();
 				}else{
 					if(false){ //TODO write a condition that responds to a play marker button
@@ -574,6 +934,26 @@
 				xhttp.open("GET", "audio/"+track+".json");
 				xhttp.send();
 			}
+			this.setPunchPoint=function(punchPoint, marker){
+					let p=(punchPoint=="in")?this.punchIn:this.punchOut;
+					let t=document.getElementById("track").getBoundingClientRect();
+					let m=marker.element.getBoundingClientRect();
+					p.marker=marker;
+					p.style.top=marker.element.getBoundingClientRect().top-t.top;
+					if(punchPoint=="in"){
+						p.style.left=m.left-t.left;
+					}else{
+						p.style.right=t.right-m.right;
+					}
+					if(inst.activePhrase && hotkey.ctrl){
+						if(punchPoint=="in"){
+							inst.activePhrase.start=marker;
+						}else{
+							inst.activePhrase.end=marker;
+						}
+						inst.activePhrase.displayMarker();
+					}
+			}
 			
 			this.audio.controls=false;
 			if(track){this.load(track);}
@@ -587,6 +967,43 @@
 			this.audio.addEventListener("pause", function(){window.mic.stop();});
 			
 			window.mic.analysis.audioElementOverride=this.audio;
+			
+			this.punchIn.id="punchIn";
+			this.punchIn.setAttribute("draggable",true);
+			this.punchIn.addEventListener("dragstart", function(event){
+				event.dataTransfer.setData("punch",true);
+				self.markerDrop=function(event){
+					if(!event.dataTransfer.getData("punch")){return;}
+					if(event.target.marker.time>=self.punchOut.marker.time){return;}
+					self.setPunchPoint("in",event.target.marker);
+				}
+			});
+			this.punchIn.addEventListener("dragend", function(){
+				self.markerDrop=function(){}
+			});
+			let addPhraseButton=document.createElement("div");
+			addPhraseButton.id="addPhraseButton";
+			addPhraseButton.innerText="+";
+			addPhraseButton.addEventListener("click", function(){
+				var phrase=new Phrase(self.punchIn.marker,self.punchOut.marker);
+				self.phrase.push(phrase);
+				phrase.displayControls();
+			});
+			this.punchIn.appendChild(addPhraseButton);
+			
+			this.punchOut.id="punchOut";
+			this.punchOut.setAttribute("draggable",true);
+			this.punchOut.addEventListener("dragstart", function(){
+				event.dataTransfer.setData("punch",true);
+				self.markerDrop=function(event){
+					if(!event.dataTransfer.getData("punch")){return;}
+					if(event.target.marker.time<=self.punchIn.marker.time){return;}
+					self.setPunchPoint("out",event.target.marker);
+				}
+			});
+			this.punchOut.addEventListener("dragend",function(){
+				self.markerDrop=function(){}
+			});
 		}
 		
 		function loadHitBuffer(callback){
@@ -604,43 +1021,52 @@
 			xhttp.send();
 		}
 		
-		function LoudnessMeter(canvas){
+		function LoudnessMeter(canvas, indicator, meter){
 			this.canvas=canvas;
+			this.indicator=indicator;
+			this.meter=meter;
 			this.ctx=canvas.getContext("2d");
+			this.lHist=[];
+			this.lRec=mic.analysis.historyDepth;
 			this.draw=function(average, stdDev){
-				let lHist=mic.analysis.sampleHistory;
-				let lRec=mic.analysis.historyDepth;
-				let meter=document.getElementById("meter");
-				meter.style.height=lHist[0].loudnessRMS;
-				meter.style.left=lRec;
+				this.lHist.unshift(mic.analysis.sampleHistory[0]);
+				if(this.lHist.length>this.lRec){this.lHist.pop();}
+				if(this.meter){
+					this.meter.style.height=this.lHist[0].loudnessRMS;
+					this.meter.style.left=this.lRec;
+				}
 				
 				let graph=this.canvas;
 				let ctx=this.ctx;
-				graph.width=lRec;
+				graph.width=this.lRec;
 				
 				ctx.clearRect(0,0,graph.width,graph.height);
 				ctx.beginPath();
 				ctx.moveTo(graph.width,graph.height);
-				for(var i=0; i<lHist.length; i++){
-					ctx.lineTo(graph.width-i, graph.height-lHist[i].loudnessRMS);
+				for(var i=0; i<this.lHist.length; i++){
+					ctx.lineTo(graph.width-i, graph.height-this.lHist[i].loudnessRMS);
 				}
-				ctx.strokeStyle=(inst.theme.accent)?inst.theme.accent:"#0000ff";
+				ctx.strokeStyle=(inst.theme.line)?inst.theme.line:"#0000ff";
 				ctx.stroke();
 				
-				ctx.beginPath();
-				ctx.moveTo(0,graph.height-average);
-				ctx.lineTo(graph.width,graph.height-average);
-				ctx.strokeStyle=(inst.theme.line)?inst.theme.line:"#202020";
-				ctx.stroke();
+				if(average){
+					ctx.beginPath();
+					ctx.moveTo(0,graph.height-average);
+					ctx.lineTo(graph.width,graph.height-average);
+					ctx.strokeStyle=(inst.theme.accent)?inst.theme.accent:"#202020";
+					ctx.stroke();
+				}
 				
-				ctx.beginPath();
-				ctx.moveTo(0,graph.height-(average+stdDev));
-				ctx.lineTo(graph.width,graph.height-(average+stdDev));
-				ctx.strokeStyle=(inst.theme.line)?inst.theme.line:"#202020";
-				ctx.stroke();
+				if(average && stdDev){
+					ctx.beginPath();
+					ctx.moveTo(0,graph.height-(average+stdDev));
+					ctx.lineTo(graph.width,graph.height-(average+stdDev));
+					ctx.strokeStyle=(inst.theme.accent)?inst.theme.accent:"#202020";
+					ctx.stroke();
+				}
 			}
 			this.pulse=function(){
-				let indicator=document.getElementById("indicator");
+				if(!this.indicator){return;}
 				indicator.classList.add("pulse");
 				let t=setTimeout(function(){indicator.classList.remove("pulse");}, 200);
 			}
@@ -654,12 +1080,29 @@
 				,keyLock:false
 				,marker:false
 			};
-			window.meter=new LoudnessMeter(document.getElementById("graph"));
 			window.mic=new MicrophoneListener();
 			window.loudnessGate=new Gate(0);
 			window.frequencyGate=new Gate(0);
+			mic.analysis.historyDepth=400;
+			window.meter=new LoudnessMeter(document.getElementById("graph"),document.getElementById("indicator"),document.getElementById("meter"));
 			window.inst=new Instrumental("SONA_25");
-						
+			//window.inst=new Instrumental("Daft_Punk--Da_Funk");
+			
+			mic.onRecord=function(audioURL){
+				if(inst.activePhrase && inst.activePhrase.activeAudio!=null){
+					let rec=new Audio(audioURL);
+					switch(inst.activePhrase.activeAudio){
+						case "draft":
+								inst.activePhrase.draft=rec;
+							break;
+						case "scratch":
+								inst.activePhrase.scratch=rec;
+							break;
+					}
+				}
+				mic.recorderArmed=false;
+			}
+			
 			function bubbleLookback(){
 				if(!mic.analysis.sampleHistory.length){return;}
 				let startPosition=mic.analysis.getIndexOfLastMarker();
@@ -676,7 +1119,7 @@
 			
 			loudnessGate.active=false;
 			loudnessGate.trigger=function(){
-				inst.activateMarker(0,mic.analysis.sampleHistory[0].time+inst.startOffset);
+				//inst.activateMarker(0,mic.analysis.sampleHistory[0].time+inst.startOffset);
 				meter.pulse();
 				frequencyGate.active=true;
 				mic.analysis.sampleHistory[0].isMarker=true;
@@ -688,12 +1131,11 @@
 			
 			frequencyGate.trigger=function(){
 				bubbleLookback();
-				inst.activateMarker(0,mic.analysis.sampleHistory[0].time+inst.startOffset);
+				//inst.activateMarker(0,mic.analysis.sampleHistory[0].time+inst.startOffset);
 				meter.pulse();
 				mic.analysis.sampleHistory[0].isMarker=true;
 			}
 			
-			mic.analysis.historyDepth=400;
 			mic.onSample=function(){
 				mic.analysis.polymeter(
 					function(){return mic.audio.paused;}
@@ -718,6 +1160,9 @@
 						frequencyGate.run(Math.abs(sample.frequencyMeanDelta));
 						
 						meter.draw(loudnessMean, loudnessStdDev);
+						if(inst.activePhrase && inst.activePhrase.activeAudio){
+							inst.activePhrase.meter.draw();
+						}
 					}
 				);
 			}
