@@ -1,0 +1,79 @@
+{
+	"title":"Carli B"
+	,"description":"Author unknown.  Not for publication or distribution in any form."
+	,"resolution":16
+	,"theme":{
+		"main":"#821e41"
+		,"accent":"#781a8f"
+		,"line":"#602010"
+		,"matte":"#e7e7d2e7"
+		,"input":"#00000000"
+		,"inputText":"#404020"
+		,"flagStart":"#d7b2bf"
+		,"flagEnd":"#cf6d8f"
+		,"backgroundImage":""
+		,"mainFont":"Helvetica"
+		,"inputFont":"Georgia"
+		,"borderRadius":2
+		,"matteBlur":2
+	}
+	,"marker":[
+		{
+			"bar":0
+			,"time":2.124
+			,"flag":"intro"
+		},{
+			"bar":8
+			,"time":17.861
+			,"flag":"verse 1"
+		},{
+			"bar":16
+			,"time":33.599
+			,"flag":"verse 1"
+		},{
+			"bar":24
+			,"time":49.335
+			,"flag":"bridge"
+		},{
+			"bar":32
+			,"time":65.074
+			,"flag":"verse 2"
+		},{
+			"bar":40
+			,"time":80.812
+			,"flag":"verse 2"
+		},{
+			"bar":48
+			,"time":96.551
+			,"flag":"breakdown"
+		},{
+			"bar":56
+			,"time":112.288
+			,"flag":"verse 3"
+		},{
+			"bar":64
+			,"time":128.025
+			,"flag":"verse 3"
+		},{
+			"bar":72
+			,"time":143.762
+			,"flag":"bridge"
+		},{
+			"bar":80
+			,"time":159.501
+			,"flag":"verse 4"
+		},{
+			"bar":88
+			,"time":175.238
+			,"flag":"verse 4"
+		},{
+			"bar":96
+			,"time":190.977
+			,"flag":"coda"
+		},{
+			"bar":100
+			,"time":199.088
+			,"flag":"end"
+		}
+	]
+}

@@ -321,6 +321,7 @@
 			<select onchange="inst=new Instrumental(this.value);">
 				<option disabled>---</option>
 				<option selected value="SONA_25">Sona 25</option>
+				<option value="FREE-Cardi-B-Type-Beat-Money-Prod.-6ixSounds">Carli B</option>
 			</select>
 		</div>
 	</div>
@@ -408,21 +409,43 @@
 			this.loop=false;
 			this.muteDraft=false;
 			this.muteScratch=false;
+			this.lagDraft=0;
+			this.lagScratch=0;
 			this.activeAudio=null;
 			this.meter;
 			this.container=document.createElement("div");
 			
 			this.play=function(){
+				inst.audio.currentTime=self.start.time;
+				//mic.start();
+				inst.play();
+				if(mic.recorderArmed){
+					if(this.activeAudio=="draft"){
+						this.lagDraft=inst.lag;
+					}else if(this.activeAudio=="scratch"){
+						this.lagScratch=inst.lag;
+					}
+				}
+				
 				if(this.draft.src && !this.muteDraft){
 					this.draft.currentTime=0;
-					this.draft.play();
+					if(this.lagDraft>0){
+						let dD=setTimeout(function(){self.draft.play();}, self.lagDraft);
+					}else{
+						this.draft.currentTime=Math.abs(this.lagDraft*.001);
+						this.draft.play();
+					}
 				}
 				if(this.scratch.src && !this.muteScratch){
 					this.scratch.currentTime=0;
-					this.scratch.play();
-				}
-				inst.audio.currentTime=this.start.time; inst.audio.volume=0.1;
-				inst.audio.play();
+					if(this.lagScratch>0){
+						let dS=setTimeout(function(){self.scratch.play();}, self.lagScratch);
+					}else{
+						this.scratch.currentTime=Math.abs(this.lagScratch*.001);
+						this.scratch.play();
+					}
+				}				
+				
 				document.getElementById("phrasePlayButton").classList="pause";
 				document.getElementById("playButton").classList="pause";
 			}
@@ -430,7 +453,7 @@
 				mic.armed=false;
 				if(this.draft){this.draft.pause();}
 				if(this.scratch){this.scratch.pause();}
-				inst.audio.pause();
+				inst.pause();
 				document.getElementById("phrasePlayButton").classList="play";
 				document.getElementById("playButton").classList="play";
 			}
@@ -490,7 +513,6 @@
 						element.addEventListener("click", function(){self.displayControls();});
 					}
 					if(inst.bar[i].marker.indexOf(this.end)>-1){
-						console.log("ends at "+i);
 						element.style.width=(inst.bar[i].marker.indexOf(this.start)>-1)?this.end.element.getBoundingClientRect().right-this.start.element.getBoundingClientRect().left:this.end.element.getBoundingClientRect().right-inst.bar[i].marker[0].element.getBoundingClientRect().left;
 						if(element){
 							inst.bar[i].element.appendChild(element);
@@ -516,14 +538,14 @@
 			let recordButton=document.createElement("div");
 			recordButton.classList="record off";
 			recordButton.addEventListener("click",function(){
-				if(self.activeAudio){
+				if(self.activeAudio){ console.log(self);
 					let bubbleList=document.getElementsByClassName("bubble");
 					for(var i=bubbleList.length-1; i>-1; i--){
 						bubbleList[i].parentElement.removeChild(bubbleList[i]);
 					}
 					mic.armed=true;
 					mic.recorderArmed=true;
-					self.play();
+					self.playPause();
 				}
 			});
 			this.container.appendChild(recordButton);
@@ -667,6 +689,7 @@
 			this.punchIn=document.createElement("div");
 			this.punchOut=document.createElement("div");
 			this.activePhrase;
+			this.lag;
 			
 			this.markerDrop=function(){}
 			this.getBarByTime=function(time){
@@ -826,6 +849,10 @@
 			}
 			this.play=function(){
 				this.audio.play();
+				let a=new Date();
+				mic.start();
+				let b=new Date();
+				this.lag=a-b;
 				let playButton=document.getElementById("playButton");
 				let phrasePlayButton=document.getElementById("phrasePlayButton");
 				if(playButton){playButton.classList="pause";}
@@ -857,6 +884,7 @@
 				}
 				mic.armed=true;
 				hotkey.marker=true;
+				mic.start();
 				self.play();
 			}
 			this.playMarkers=function(offset=0){
@@ -940,11 +968,12 @@
 					let m=marker.element.getBoundingClientRect();
 					p.marker=marker;
 					p.style.top=marker.element.getBoundingClientRect().top-t.top;
-					if(punchPoint=="in"){
-						p.style.left=m.left-t.left;
-					}else{
-						p.style.right=t.right-m.right;
-					}
+					p.style.left=(punchPoint=="in")?m.left-t.left:m.left-t.left+(m.width-p.getBoundingClientRect().width);
+					//if(punchPoint=="in"){
+					//	p.style.left=m.left-t.left;
+					//}else{
+					//	p.style.right=t.right-m.right-m.width;
+					//}
 					if(inst.activePhrase && hotkey.ctrl){
 						if(punchPoint=="in"){
 							inst.activePhrase.start=marker;
@@ -960,7 +989,7 @@
 			if(!element){document.body.appendChild(this.audio);}
 			
 			this.audio.addEventListener("play", function(){
-				window.mic.start();
+				//window.mic.start();
 				if(!window.ctx){loadHitBuffer();}
 				self.playMarkers();
 			});
